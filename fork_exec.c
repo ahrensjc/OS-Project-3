@@ -12,13 +12,12 @@ int get_memory(int pid);
 int main(int argc, char* argv[])
 {
   pid_t pid;
+  int childPid;
   
   //fork a child process
-  //GetRamInKB();
   printf("ram: %i\n", get_memory(getpid()));
   
   pid = fork();
-  fork();
 
   if(pid < 0) //fork failed
   {
@@ -29,14 +28,18 @@ int main(int argc, char* argv[])
   {  
     printf("I am the child %d mypid is %d\n", pid, getpid());
     printf("ram: %i\n", get_memory(getpid()));
+    childPid = getpid();
+    
+    char* arr[] = {NULL};
+    execv("big_function", arr);
   }
   else //parent process
   {
     wait(NULL);
-    wait(NULL);
   
     printf("I am the parent %d, mypid is %d\n", pid, getpid());
     printf("ram: %i\n", get_memory(getpid()));
+    //printf("The child's memory is: %i\n", get_memory(childPid));
   }
   
   //printf("ram: %i\n", get_memory(getpid()));
