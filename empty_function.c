@@ -14,20 +14,7 @@
 
 int main( int argc, char* argv[])
 {
-  int i;
-  int *addresses[mem_array_size];
-  int *temp;
-  for(i = 0; i < mem_array_size; i++){
-    temp = (int *)malloc(500000*sizeof(int));
-    addresses[i] = temp;
-  }
-  printf("Child done allocating\n");
-  sleep(10);
-  for(i=0; i < mem_array_size; i++){
-    free(addresses[i]);
-  }
-  exit(0);
-  
+  sleep(10);  
   return 0;
 }
 

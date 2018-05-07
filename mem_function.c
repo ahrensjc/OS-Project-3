@@ -9,21 +9,24 @@
 #include <string.h>
 #include <unistd.h>
 
-int get_memory(int pid)
+int main(int argc, char** argv)
 {  
-
+  pid_t pid = getpid();
   FILE *fp;
   char path[50];
   char pidString[10];
-  snprintf(pidString, 10, "%d", pid);
-  strcpy(path, "/usr/bin/ps -o rss ");
-  strcat(path, pidString);
+  char username[20];
+
+  getlogin_r(username, 20);
+  strcpy(path, "/usr/bin/ps -o pid,rss,vsz -u ");
+  strcat(path, username);
 
   char * lineBuf = NULL; // Stores the whole line
   char * lineData = NULL; // For trimming whitespace
   size_t len = 0;
   ssize_t read;
-  int memSize;
+  int rss, vsz;
+  double pmem;
 
 
   /* Open the command for reading. */
@@ -32,14 +35,12 @@ int get_memory(int pid)
     printf("Failed to run command\n" );
     exit(1);
   }
-
+  read = getline(&lineBuf, &len, fp); // Trim first line
   while ((read = getline(&lineBuf, &len, fp)) != -1) {
-    lineBuf[strcspn(lineBuf, "\n\r")] = 0;
-    lineData = lineBuf+(2*sizeof(char));
-    memSize = atoi(lineData);
-    if (memSize != 0)
-      break;
+    printf("Line: %s\n", lineBuf);
+    sscanf(lineBuf, "%d %d %d %f", &pid, &rss, &vsz, &pmem);
+    printf("PID: %d\tRSS: %d\tVSZ: %d\t%%mem: %f\n", pid, rss, vsz, pmem);
   }
 
-  return memSize;
+  return 0;
 }

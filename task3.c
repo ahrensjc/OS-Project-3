@@ -19,7 +19,7 @@ int get_free_mem();
 int get_available();
 int get_memory(int pid);
 
-float THRESHOLD = 0.85;
+float THRESHOLD = 0.05;
 
 int main(int argc, char* argv[])
 {
@@ -28,7 +28,7 @@ int main(int argc, char* argv[])
   
   //
   //while(1)
-  for(int i = 0; i < 1; i++)
+  while(1)
   {
     int totalAvailable = get_available();
     int totalFree = get_free_mem();
@@ -37,15 +37,16 @@ int main(int argc, char* argv[])
     
     float allocatedMem = usedMem * 1.0 / totalAvailable;
     
-    printf("avail: %i    free: %i    used: %i    percentage: %f%\n", totalAvailable, totalFree, usedMem, allocatedMem);
+    //printf("avail: %i    free: %i    used: %i    percentage: %f%\n", totalAvailable, totalFree, usedMem, allocatedMem);
     //printf("allocated: %f%\n", allocatedMem);
     
-    if(allocatedMem > THRESHOLD && !aboveThreshold)
+    if((allocatedMem > THRESHOLD) && !aboveThreshold)
     {
         aboveThreshold = 1;
         printf("YOU'RE USING TOO MUCH MEMORY\n");
+        printf("Used memory: %.1f%%\n", allocatedMem*100);
     }
-    else
+    else if (allocatedMem < THRESHOLD)
     {
         aboveThreshold = 0;
     }
