@@ -16,6 +16,8 @@
 #include <string.h>
 
 float get_used_mem();
+void kill_a_process();
+
 float THRESHOLD = 0.05;
 
 int main(int argc, char* argv[])
@@ -29,11 +31,12 @@ int main(int argc, char* argv[])
   {
     float allocatedMem = get_used_mem();
     
-    if((allocatedMem > THRESHOLD) && !aboveThreshold)
+    if(allocatedMem > THRESHOLD)
     {
         aboveThreshold = 1;
         printf("YOU'RE USING TOO MUCH MEMORY\n");
         printf("Used memory: %.1f%%\n", allocatedMem*100);
+        kill_a_process();
     }
     else if (allocatedMem < THRESHOLD)
     {
@@ -72,4 +75,41 @@ float get_used_mem()
     
     fclose(meminfo);
     return -1;
+}
+
+void kill_a_process()
+{
+  FILE *fp;
+  char path[50];
+  char pidString[10];
+  char username[20];
+
+  getlogin_r(username, 20);
+  strcpy(path, "/usr/bin/ps -o pid,rss,vsz,%mem -u ");
+  strcat(path, username);
+
+  char * lineBuf = NULL; // Stores the whole line
+  char * lineData = NULL; // For trimming whitespace
+  size_t len = 0;
+  ssize_t read;
+  int pid, rss, vsz;
+  float pmem = 1.0;
+
+  /* Open the command for reading. */
+  fp = popen(path, "r");
+  if (fp == NULL) {
+    printf("Failed to run command\n" );
+    exit(1);
+  }
+  read = getline(&lineBuf, &len, fp); // Trim first line
+  while ((read = getline(&lineBuf, &len, fp)) != -1) {
+    sscanf(lineBuf, "%d %d %d %f", &pid, &rss, &vsz, &pmem);
+    
+    if((getpid()!=pid) && (rss > 5000)){
+      printf("KILLED\tPID: %d\tRSS: %d\tVSZ: %d\t%%mem: %f\n", pid, rss, vsz, pmem);
+      kill(pid, SIGKILL);
+      return;
+    }
+  }
+  return;
 }
