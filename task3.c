@@ -13,15 +13,14 @@
 #include <string.h>
 
 float get_used_mem();
-float THRESHOLD = 0.05;
+
+// MEMORY THRESHOLD
+float THRESHOLD = 0.85;
 
 int main(int argc, char* argv[])
 {
-  //int totalAvailable = get_available();
   int aboveThreshold = 0; //for making sure you only print once when you go over
   
-  //
-  //while(1)
   while(1)
   {
     float allocatedMem = get_used_mem();
@@ -36,10 +35,10 @@ int main(int argc, char* argv[])
     {
         aboveThreshold = 0;
     }
+    
+    // Wait for 100ms
+    usleep(100000);
   }
-
-  //printf("%i\n", get_available());
-  //printf("%i\n", get_free_mem());
   
   return 0;
 }

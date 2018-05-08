@@ -55,7 +55,7 @@ int main( int argc, char* argv[])
     int *addresses[mem_array_size];
     int *temp;
     for(i = 0; i < mem_array_size; i++){
-      temp = (int *)malloc(500000*sizeof(int));
+      temp = (int *)malloc(1000*sizeof(int));
       addresses[i] = temp;
     }
     printf("Child done allocating\n");
