@@ -1,3 +1,10 @@
+/*
+  Written By: James Ahrens & Isaac Hendrickson
+  May 4, 2018
+  Desc: Used to test memory allocation on linux VM's, generates child processes of multiple sizes and tests
+  the space it takes to allocate them.
+*/
+
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>

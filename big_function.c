@@ -1,7 +1,7 @@
 /*
   Written By: James Ahrens & Isaac Hendrickson
   May 4, 2018
-  Desc: Used to test memory allocation for linuxVM's, generates a large array.
+  Desc: Used to test memory allocation for linuxVM's, generates a large array using malloc.
 */
 
 #include <stdio.h>
