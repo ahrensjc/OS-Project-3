@@ -1,10 +1,8 @@
 /*
   Written By: James Ahrens & Isaac Hendrickson
   May 4, 2018
-  Desc: Used to test memory allocation for linuxVM's. Sends a message if memory allocation is above threshold
-  NOTE: in proc/meminfo MemAvailable will update with the amount of memory so you can't actually use that you
-        have to use MemTotal
-  When running use './memMonitor &'
+  Desc: Used to test memory allocation for linuxVM's. Sends a message if memory allocation is above threshold and halts
+  processes until memory is below the threshold.
 */
 
 #include <stdio.h>
@@ -18,7 +16,7 @@
 float get_used_mem();
 void kill_a_process();
 
-float THRESHOLD = 0.05;
+float THRESHOLD = 0.85;
 
 int main(int argc, char* argv[])
 {

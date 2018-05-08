@@ -1,7 +1,7 @@
 /*
   Written By: James Ahrens & Isaac Hendrickson
   May 4, 2018
-  Desc: Used to test memory allocation for linuxVM's.
+  Desc: Used to test memory allocation for linuxVM's, process kills itself.
 */
 
 #include <stdio.h>

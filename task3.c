@@ -2,9 +2,6 @@
   Written By: James Ahrens & Isaac Hendrickson
   May 4, 2018
   Desc: Used to test memory allocation for linuxVM's. Sends a message if memory allocation is above threshold
-  NOTE: in proc/meminfo MemAvailable will update with the amount of memory so you can't actually use that you
-        have to use MemTotal
-  When running use './memMonitor &'
 */
 
 #include <stdio.h>

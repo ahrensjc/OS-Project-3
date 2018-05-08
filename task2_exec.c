@@ -1,3 +1,10 @@
+/*
+  Written By: James Ahrens & Isaac Hendrickson
+  May 4, 2018
+  Desc: Used to test memory allocation on linux VM's, generates child process and calls execv on it to see how much a 
+  child that will call another function will allocate.
+*/
+
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
