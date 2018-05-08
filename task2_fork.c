@@ -24,6 +24,10 @@ int main(int argc, char* argv[])
   //GetRamInKB();
   print_memory(getpid());
   
+  
+  // The following is a nested set of forks
+  // This forks three children, but only from the parent
+  // The children never fork
   pid = fork();
 
   if(pid < 0) //fork failed
@@ -31,7 +35,7 @@ int main(int argc, char* argv[])
     fprintf(stderr, "Fork Failed\n");
     return 1;
   }
-  else if(pid == 0) //child process
+  else if(pid == 0) //child process 1
   {  
     printf("I am the first child %d mypid is %d\n", pid, getpid());
     print_memory(getpid());
@@ -39,7 +43,7 @@ int main(int argc, char* argv[])
   }
   else //parent process
   {
-    waitpid(pid, NULL, WNOHANG);
+    wait(NULL);
     printf("I am the parent %d, mypid is %d\n", pid, getpid());
     print_memory(getpid());
 
@@ -49,7 +53,7 @@ int main(int argc, char* argv[])
         fprintf(stderr, "Fork Failed\n");
         return 1;
       }
-    else if(pid == 0) //child process
+    else if(pid == 0) //child process 2
       {  
         printf("I am the second child %d mypid is %d\n", pid, getpid());
         print_memory(getpid());
@@ -57,7 +61,7 @@ int main(int argc, char* argv[])
       }
     else //parent process
       {
-        waitpid(pid, NULL, WNOHANG);
+        wait(NULL);
         printf("I am the parent %d, mypid is %d\n", pid, getpid());
         print_memory(getpid());
         pid = fork();
@@ -66,7 +70,7 @@ int main(int argc, char* argv[])
             fprintf(stderr, "Fork Failed\n");
             return 1;
           }
-        else if(pid == 0) //child process
+        else if(pid == 0) //child process 3
           {  
             printf("I am the third child %d mypid is %d\n", pid, getpid());
             print_memory(getpid());
@@ -74,7 +78,7 @@ int main(int argc, char* argv[])
           }
         else //parent process
           {
-            waitpid(pid, NULL, WNOHANG);
+            wait(NULL);
             printf("I am the parent %d, mypid is %d\n", pid, getpid());
             print_memory(getpid());
             
@@ -82,12 +86,12 @@ int main(int argc, char* argv[])
       }
   }
   
-  //printf("ram: %i\n", get_memory(getpid()));
-  //printf("parent done\n");
   
   return 0;
 }
 
+
+// Print the memory usage of a target process
 void print_memory(int pid_target){
 
   FILE *fp;
@@ -95,6 +99,8 @@ void print_memory(int pid_target){
   char pidString[10];
   char username[20];
 
+  // Generate command to get the current user's processes
+  // Get them in the format "PID RSS VSZ %MEM"
   getlogin_r(username, 20);
   strcpy(path, "/usr/bin/ps -o pid,rss,vsz,%mem -u ");
   strcat(path, username);
@@ -113,12 +119,13 @@ void print_memory(int pid_target){
     printf("Failed to run command\n" );
     exit(1);
   }
-  read = getline(&lineBuf, &len, fp); // Trim first line
-  while ((read = getline(&lineBuf, &len, fp)) != -1) {
-    sscanf(lineBuf, "%d %d %d %f", &pid, &rss, &vsz, &pmem);
-    if(pid_target==pid){
+  read = getline(&lineBuf, &len, fp); // Trim first line (it only contains column headers)
+  while ((read = getline(&lineBuf, &len, fp)) != -1) { // Scan the rest of the output line by line
+    sscanf(lineBuf, "%d %d %d %f", &pid, &rss, &vsz, &pmem); // Read each line according to the format spec
+    if(pid_target==pid){ // If we found the process we're looking for, print its info out
       printf("PID: %d\tRSS: %d\tVSZ: %d\t%%mem: %f\n", pid, rss, vsz, pmem);
     }
   }
 
 }
+
